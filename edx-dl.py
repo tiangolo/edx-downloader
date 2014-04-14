@@ -51,12 +51,16 @@ from bs4 import BeautifulSoup
 
 OPENEDX_SITES = {
     'edx': {
-        'url': 'https://courses.edx.org', 
+        'url': 'https://courses.edx.org',
         'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
-    }, 
+    },
     'stanford': {
         'url': 'https://class.stanford.edu',
         'courseware-selector': ('section', {'aria-label':'Course Navigation'}),
+    },
+    'edge': {
+        'url': 'https://edge.edx.org',
+        'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
     },
 }
 BASE_URL = OPENEDX_SITES['edx']['url']
@@ -67,7 +71,7 @@ COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
-## If nothing else is chosen, we chose the default user agent:
+# # If nothing else is chosen, we chose the default user agent:
 
 DEFAULT_USER_AGENTS = {"chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31",
                        "firefox": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0",
@@ -85,7 +89,7 @@ def change_openedx_site(site_name):
     if site_name not in OPENEDX_SITES.keys():
         print("OpenEdX platform should be one of: %s" % ', '.join(OPENEDX_SITES.keys()))
         sys.exit(2)
-    
+
     BASE_URL = OPENEDX_SITES[site_name]['url']
     EDX_HOMEPAGE = BASE_URL + '/login_ajax'
     LOGIN_API = BASE_URL + '/login_ajax'
@@ -127,7 +131,7 @@ def get_page_contents(url, headers):
 
 def directory_name(initial_name):
     import string
-    allowed_chars = string.digits+string.ascii_letters+" _."
+    allowed_chars = string.digits + string.ascii_letters + " _."
     result_name = ""
     for ch in initial_name:
         if allowed_chars.find(ch) != -1:
@@ -142,11 +146,11 @@ def edx_json2srt(o):
         if t == "":
             continue
         output += str(i) + '\n'
-        s = datetime(1, 1, 1) + timedelta(seconds=s/1000.)
-        e = datetime(1, 1, 1) + timedelta(seconds=e/1000.)
+        s = datetime(1, 1, 1) + timedelta(seconds=s / 1000.)
+        e = datetime(1, 1, 1) + timedelta(seconds=e / 1000.)
         output += "%02d:%02d:%02d,%03d --> %02d:%02d:%02d,%03d" % \
-            (s.hour, s.minute, s.second, s.microsecond/1000,
-             e.hour, e.minute, e.second, e.microsecond/1000) + '\n'
+            (s.hour, s.minute, s.second, s.microsecond / 1000,
+             e.hour, e.minute, e.second, e.microsecond / 1000) + '\n'
         output += t + "\n\n"
         i += 1
     return output
@@ -290,7 +294,7 @@ def main():
     selected_course = courses[c_number - 1]
     COURSEWARE = selected_course[1].replace('info', 'courseware')
 
-    ## Getting Available Weeks
+    # # Getting Available Weeks
     courseware = get_page_contents(COURSEWARE, headers)
     soup = BeautifulSoup(courseware)
 
@@ -402,6 +406,9 @@ def get_filename(target_dir, filename_prefix):
     # things clearer , a good refactoring would be to get
     # the info from the video_url or the current output, to avoid the
     # iteration from the current dir
+
+    print("target_dir", target_dir)
+    print("filename_prefix", filename_prefix)
     filenames = os.listdir(target_dir)
     subs_filename = filename_prefix
     for name in filenames:  # Find the filename of the downloaded video
