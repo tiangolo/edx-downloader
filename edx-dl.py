@@ -63,7 +63,7 @@ OPENEDX_SITES = {
         'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
     },
 }
-BASE_URL = OPENEDX_SITES['edx']['url']
+BASE_URL = OPENEDX_SITES['edge']['url']
 EDX_HOMEPAGE = BASE_URL + '/login_ajax'
 LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
@@ -334,7 +334,7 @@ def main():
         id_container = splitter.split(page)[1:]
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      id_container]
-        subsUrls += [BASE_URL + regexpSubs.search(container).group(1) + "?videoId=" + id + "&language=en"
+        subsUrls += [BASE_URL + regexpSubs.search(container).group(1) + "/en?videoId=" + id
                      for id, container in zip(video_id[-len(id_container):], id_container)]
         # Try to download some extra videos which is referred by iframe
         extra_ids = extra_youtube.findall(page)
@@ -392,6 +392,8 @@ def main():
         if args.subtitles:
             filename = get_filename(target_dir, filename_prefix)
             subs_filename = os.path.join(target_dir, filename + '.srt')
+            print('SUBS LINK:')
+            print(s)
             if not os.path.exists(subs_filename):
                 subs_string = edx_get_subtitle(s, headers)
                 if subs_string:
@@ -406,9 +408,6 @@ def get_filename(target_dir, filename_prefix):
     # things clearer , a good refactoring would be to get
     # the info from the video_url or the current output, to avoid the
     # iteration from the current dir
-
-    print("target_dir", target_dir)
-    print("filename_prefix", filename_prefix)
     filenames = os.listdir(target_dir)
     subs_filename = filename_prefix
     for name in filenames:  # Find the filename of the downloaded video
@@ -418,6 +417,7 @@ def get_filename(target_dir, filename_prefix):
 
 if __name__ == '__main__':
     try:
+        os.chdir(os.path.dirname(__file__))
         main()
     except KeyboardInterrupt:
         print("\n\nCTRL-C detected, shutting down....")
