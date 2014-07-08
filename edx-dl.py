@@ -224,6 +224,7 @@ def parse_args():
 
 
 def main():
+
     args = parse_args()
 
     # if no args means we are calling the interactive version
@@ -276,10 +277,13 @@ def main():
         courses.append((c_name, c_link, state))
     numOfCourses = len(courses)
 
+
     # Welcome and Choose Course
 
-    print('Welcome %s' % USERNAME)
-    print('You can access %d courses' % numOfCourses)
+
+
+    print((u'Welcome %s' % USERNAME).encode('utf-8'))
+    print((u'You can access %d courses' % numOfCourses).encode('utf-8'))
 
     c = 0
     for course in courses:
@@ -383,12 +387,12 @@ def main():
         while True:  # Save output to youtube_stdout while this being echoed
             tmp = popen_youtube.stdout.read(1)
             youtube_stdout += tmp
-            print(tmp.decode(enc), end="")
+
+            print(tmp.decode(enc, errors='ignore'), end="")
             sys.stdout.flush()
             # do it until the process finish and there isn't output
             if tmp == b"" and popen_youtube.poll() is not None:
                 break
-
         if args.subtitles:
             filename = get_filename(target_dir, filename_prefix)
             subs_filename = os.path.join(target_dir, filename + '.srt')
