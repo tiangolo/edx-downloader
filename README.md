@@ -1,5 +1,8 @@
 # DESCRIPTION
 
+Modified version to work with edge.edx.org. 
+Downloads subtitles from edge.edx.org but may not download them from edx.org.
+
 Simple tool to download video lectures from edx.org.  It requires the
 Python interpreter (> 2.6), youtube-dl, BeautifulSoup4 and it's
 platform independent.  It should work fine in your Unix box, in
